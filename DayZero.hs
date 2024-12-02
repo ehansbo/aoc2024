@@ -13,6 +13,11 @@ splitAndReadFile name splitter = do
         input <- splitFile name splitter
         return $ map read input
 
+splitTwiceAndRead :: Read a => String -> String -> String -> IO [[a]]
+splitTwiceAndRead name bigSplit smallSplit = do
+    input <- splitFile name bigSplit
+    return $ map (\l -> map read (splitOn smallSplit l)) input
+
 manuallyParse :: String -> String -> (String -> a) -> IO [a]
 manuallyParse name splitter f = do
     input <- splitFile name splitter
