@@ -20,4 +20,5 @@ valid xs =
     let getDiffs (y:z:ys) = z-y : getDiffs (z:ys)
         getDiffs _ = []
         diffs = getDiffs xs
-    in (length diffs == length (filter (< 0) diffs) && length diffs == length (filter (>(-4)) diffs)) || (length diffs == length (filter (>0) diffs) && length diffs == length (filter (<4) diffs))
+        cmpDiffs f = length diffs == length (filter f diffs)
+    in (cmpDiffs (<0) || cmpDiffs (>0)) && cmpDiffs ((<4) . abs)
