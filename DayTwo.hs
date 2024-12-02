@@ -12,7 +12,7 @@ solve1 xs = length $ filter valid xs
 solve2 :: [[Int]] -> Int
 solve2 (xs:xss) = 
     let alternatives = xs : map (\i -> fst (splitAt i xs) ++ tail (snd (splitAt i xs))) [0..length xs-1]
-    in if length (filter valid alternatives) > 0 then 1 + solve2 xss else 0 + solve2 xss
+    in if foldl (||) False (map valid alternatives) then 1 + solve2 xss else 0 + solve2 xss
 solve2 _ = 0
 
 valid :: [Int] -> Bool
