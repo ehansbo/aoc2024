@@ -11,27 +11,24 @@ dontRegex = mkRegex "don't\\(\\)"
 main :: IO ()
 main = do
     input <- readFile "d3.txt"
-    putStrLn input
     print $ solve1 input
     print $ solve2 input
 
 solve2 :: String -> Int
-solve2 = solve2' True
-    where solve2' active str =
-            let regex1 = if active then dontRegex else doRegex
-                maybeFoundMul = matchRegexAll mulRegex str
-                maybeFoundFlip = matchRegexAll regex1 str
-                continue res rest = (if active then readMul res else 0 ) + solve2' active rest
-            in  case maybeFoundMul of
-                    Nothing -> 0
-                    Just (beforeMul, _, restMul, (res:[])) ->
-                        case maybeFoundFlip of 
-                            Nothing -> continue res restMul
-                            Just (beforeFlip, _, restFlip, _) -> 
-                                if (length beforeFlip < length beforeMul) 
-                                    then solve2' (not active) restFlip 
-                                    else continue res restMul
+solve2 str = 
+    let cleaned = clean str
+    in solve1 cleaned
 
+clean :: String -> String
+clean str = 
+    let maybeFound = matchRegexAll dontRegex str
+    in  case maybeFound of
+            Nothing -> str
+            Just (before, _, after, _) ->
+                let maybeNextDo = matchRegexAll doRegex after
+                in  case maybeNextDo of
+                        Nothing -> before
+                        Just (_, _, afterDo, _) -> before ++ clean afterDo
 
 solve1 :: String -> Int
 solve1 str =
