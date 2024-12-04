@@ -12,7 +12,7 @@ solve1 :: [String] -> Int
 solve1 rows =
     let coords = getCoordinates rows
         runCoord ((x1,y1):(x2,y2):(x3,y3):(x4,y4):[]) = rows ! (x1, y1) : rows ! (x2, y2) : rows ! (x3, y3) : rows ! (x4, y4) : []
-    in sum $ map (\coords' -> if runCoord coords' == "XMAS" then 1 else 0) coords
+    in length $ filter (\coords' -> runCoord coords' == "XMAS") coords
 
 solve2 :: [String] -> Int
 solve2 rows =
