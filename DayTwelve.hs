@@ -23,17 +23,17 @@ solve2 coords coordsMap =
 price2 :: Set.Set Coord -> Int
 price2 coords = Set.size coords * (sum $ map (corners coords) (Set.toList coords))
 
-corners :: Set.Set Coord -> Coord -> Int
+corners :: Set.Set Coord -> Coord -> Int -- corners and edges have the same number. Finding corners is tricky, but below works.
 corners region (x, y) =
     let n = neighbors (x, y)
         nRegion = filter (\c -> Set.member c region) n
         lineDistance (x1, y1) (x2, y2) = max (abs (x2-x1)) (abs (y2-y1))
-    in  if length nRegion == 0 then 4 else
-        if length nRegion == 1 then 2 else
-        if length nRegion == 2 && lineDistance (nRegion !! 0) (nRegion !! 1) == 2 then 0 else
-        if length nRegion == 2 then 1 + if getInsideCorner (x, y) (nRegion !! 0) (nRegion !! 1) `Set.member` region  then 0 else 1 else
-        if length nRegion == 4 then length $ filter (\coord -> not $ coord `Set.member` region) (cornersCoords (x, y)) else
-        if length nRegion == 3 then handleT (x, y) nRegion region else
+    in  if length nRegion == 0 then 4 else -- Standalone point, always four sides
+        if length nRegion == 1 then 2 else -- Two corners
+        if length nRegion == 2 && lineDistance (nRegion !! 0) (nRegion !! 1) == 2 then 0 else -- Never any corners if opposing neighbors only
+        if length nRegion == 2 then 1 + if getInsideCorner (x, y) (nRegion !! 0) (nRegion !! 1) `Set.member` region  then 0 else 1 else -- Always outside corner, sometimes inside corner
+        if length nRegion == 4 then length $ filter (\coord -> not $ coord `Set.member` region) (cornersCoords (x, y)) else -- a cross - need to count insidre corners on all sides
+        if length nRegion == 3 then handleT (x, y) nRegion region else -- T-shaped, only inside corners in the bottom of the T are relevant to count
         error $ "Found edge case " ++ show nRegion
 
 handleT :: Coord -> [Coord] -> Set.Set Coord -> Int
