@@ -3,7 +3,7 @@ import Data.List.Split
 import Data.List
 
 data Direction = North | South | West | East
-    deriving (Show, Eq)
+    deriving (Show, Eq, Ord)
 
 type Coord = (Int, Int)
 
