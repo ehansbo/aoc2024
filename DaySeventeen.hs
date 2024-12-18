@@ -33,6 +33,9 @@ main = do
 runA :: Program -> Int -> [Int]
 runA program i = run $ program {a = i}
 
+-- The program divides a by 8 every iteration. This means that the last number is determined by the coefficient of c*8^n, and the one before by the coefficient of c*8^(n-1), and so on.
+-- However, there are other things affecting the number. The coefficient of input n affects the coefficients of all previous inputs. So this function first determines the highest power of 8,
+-- then each coefficient leading to the correct output is analyzed separately (a correct last number does not guarantee a solution is possible). Probably could be done nicer but this works.
 solve2 :: (Int -> [Int]) -> [Int] -> Int -> Int -> Maybe Int
 solve2 _ _ (-1) prev = Just prev
 solve2 f ans n prev =
